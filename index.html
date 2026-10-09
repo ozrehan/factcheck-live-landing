@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FactCheck Live — Real-time AI Fact-Checking for Social Videos</title>
+<meta name="description" content="An AI layer that watches any social video with you, detects factual claims, verifies them against live web evidence, and streams source-backed verdicts in real time.">
+<link rel="icon" href="logo.png">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;background:#fff;color:#0f172a;line-height:1.6}
+.nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;padding:14px 32px;background:rgba(255,255,255,.85);backdrop-filter:blur(12px);border-bottom:1px solid #e2e8f0}
+.nav img{width:40px;height:40px;border-radius:10px}
+.nav h1{font-size:19px;font-weight:900;letter-spacing:-.3px}.nav h1 span{color:#0284c7}
+.nav .links{margin-left:auto;display:flex;gap:24px;font-size:14px;font-weight:600;align-items:center}
+.nav a{color:#475569;text-decoration:none}.nav a:hover{color:#0284c7}
+.nav .cta{background:linear-gradient(135deg,#1d4ed8,#0ea5e9);color:#fff;padding:10px 22px;border-radius:12px;font-weight:800}
+.hero{max-width:1200px;margin:0 auto;padding:80px 32px 60px;display:grid;grid-template-columns:1.05fr .95fr;gap:60px;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:8px;background:#f0f9ff;border:1px solid #bae6fd;color:#0369a1;border-radius:999px;padding:6px 16px;font-size:13px;font-weight:700}
+.hero h2{font-size:52px;font-weight:900;letter-spacing:-1.8px;line-height:1.1;margin:20px 0}
+.hero h2 .grad{background:linear-gradient(135deg,#1d4ed8,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p.sub{font-size:18px;color:#64748b;margin-bottom:32px;max-width:500px}
+.btns{display:flex;gap:14px;flex-wrap:wrap}
+.btn{padding:15px 30px;border-radius:14px;font-weight:800;font-size:15px;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn.p{background:linear-gradient(135deg,#1d4ed8,#0ea5e9);color:#fff;box-shadow:0 8px 24px rgba(29,78,216,.3)}
+.btn.s{background:#f8fafc;color:#0284c7;border:2px solid #e0f2fe}
+.stats{display:flex;gap:36px;margin-top:40px}
+.stats .s b{font-size:28px;font-weight:900;color:#0f172a;display:block}
+.stats .s span{font-size:13px;color:#64748b}
+.phone{position:relative;max-width:320px;margin:0 auto}
+.phone .frame{background:#0f172a;border-radius:44px;padding:12px;box-shadow:0 30px 80px rgba(2,132,199,.25)}
+.phone video{width:100%;border-radius:32px;display:block;aspect-ratio:9/16;object-fit:cover;background:#1e293b}
+.phone .notif{position:absolute;left:-70px;top:60px;background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:12px 16px;box-shadow:0 12px 40px rgba(0,0,0,.15);max-width:200px;animation:float 3s ease-in-out infinite}
+.phone .notif2{top:auto;bottom:80px;left:auto;right:-60px;animation-delay:1.5s}
+@keyframes float{50%{transform:translateY(-10px)}}
+.notif .b{font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;text-transform:uppercase}
+.b.r{background:#fee2e2;color:#b91c1c}.b.g{background:#dcfce7;color:#15803d}
+.notif p{font-size:12px;font-weight:600;margin-top:6px;color:#0f172a}
+.features{background:#f8fafc;padding:80px 32px}
+.features .wrap{max-width:1200px;margin:0 auto}
+.features h3,.how h3,.dl h3{font-size:32px;font-weight:900;text-align:center;letter-spacing:-.8px;margin-bottom:16px}
+.features .sub{text-align:center;color:#64748b;max-width:600px;margin:0 auto 48px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:20px;padding:28px}
+.card .ic{font-size:32px;margin-bottom:14px}
+.card h4{font-size:17px;font-weight:800;margin-bottom:8px}
+.card p{font-size:14px;color:#64748b}
+.how{max-width:1200px;margin:0 auto;padding:80px 32px}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin-top:40px}
+.step{background:#fff;border:1px solid #e2e8f0;border-radius:20px;padding:28px;position:relative}
+.step .n{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#1d4ed8,#06b6d4);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:19px;margin-bottom:16px}
+.step h4{font-size:16px;font-weight:800;margin-bottom:8px}
+.step p{font-size:14px;color:#64748b}
+.dl{background:linear-gradient(135deg,#0c4a6e,#1d4ed8);color:#fff;padding:80px 32px;text-align:center}
+.dl h3{color:#fff}
+.dl p{color:#bae6fd;max-width:560px;margin:0 auto 32px;font-size:17px}
+.dl .btn.p{background:#fff;color:#1d4ed8;box-shadow:none}
+.dl .btn.s{background:transparent;color:#fff;border-color:rgba(255,255,255,.3)}
+footer{padding:36px;text-align:center;color:#94a3b8;font-size:14px;border-top:1px solid #e2e8f0}
+footer b{color:#0f172a}
+@media(max-width:900px){.hero{grid-template-columns:1fr;padding:50px 24px}.hero h2{font-size:38px}.phone .notif{left:-10px}.phone .notif2{right:-10px}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+<img src="logo.png" alt="FactCheck Live">
+<h1>FactCheck <span>Live</span></h1>
+<div class="links">
+<a href="#features">Features</a>
+<a href="#how">How it works</a>
+<a href="https://github.com/ozrehan/factcheck-live">GitHub</a>
+<a href="#download" class="cta">Get Extension</a>
+</div>
+</nav>
+
+<div class="hero">
+<div>
+<div class="pill">⚡ Real-time AI fact-checking</div>
+<h2>Don't just watch.<br><span class="grad">Know what's true.</span></h2>
+<p class="sub">FactCheck Live watches any social video with you — detecting claims as they're spoken, verifying against live web evidence, and streaming source-backed verdicts in real time.</p>
+<div class="btns">
+<a class="btn p" href="#download">⚡ Get the Chrome Extension</a>
+<a class="btn s" href="https://github.com/ozrehan/factcheck-live">View on GitHub</a>
+</div>
+<div class="stats">
+<div class="s"><b>5+</b><span>Platforms supported</span></div>
+<div class="s"><b>Real-time</b><span>Verdict streaming</span></div>
+<div class="s"><b>25k</b><span>Ad-block rules built in</span></div>
+</div>
+</div>
+<div class="phone">
+<div class="frame">
+<video src="https://cdn.jsdelivr.net/gh/ozrehan/factcheck-live-assets@main/ap-reel.mp4" autoplay muted loop playsinline></video>
+</div>
+<div class="notif"><span class="b r">Disputed</span><p>"Great Wall visible from space" — NASA disagrees</p></div>
+<div class="notif notif2"><span class="b g">Supported</span><p>"Water boils at 100°C" — confirmed</p></div>
+</div>
+</div>
+
+<div class="features" id="features">
+<div class="wrap">
+<h3>Built for the misinformation age</h3>
+<p class="sub">Social feeds move fast. Truth should move faster.</p>
+<div class="grid">
+<div class="card"><div class="ic">🎙️</div><h4>Live Transcription</h4><p>Extracts and transcribes video audio in real time using Groq Whisper or on-device AI — no API key required to start.</p></div>
+<div class="card"><div class="ic">🔍</div><h4>Claim Detection</h4><p>Identifies factual, checkable claims from speech — filtering opinions, jokes, and filler automatically.</p></div>
+<div class="card"><div class="ic">🌐</div><h4>Web Evidence</h4><p>Searches the live web for supporting and contradicting sources for every claim, with real citations.</p></div>
+<div class="card"><div class="ic">⚖️</div><h4>Honest Verdicts</h4><p>Supported, Disputed, or Unverifiable — with confidence scores. Never guesses when evidence is thin.</p></div>
+<div class="card"><div class="ic">⚡</div><h4>Zero Friction</h4><p>No links to paste. Open any reel or video — the floating widget detects and scans it automatically.</p></div>
+<div class="card"><div class="ic">🛡️</div><h4>Ad Blocker Included</h4><p>25,000 blocking rules, auto-skip for skippable ads, and 16x fast-forward through unskippable ones.</p></div>
+</div>
+</div>
+</div>
+
+<div class="how" id="how">
+<h3>How it works</h3>
+<div class="steps">
+<div class="step"><div class="n">1</div><h4>Open any video</h4><p>Instagram Reels, YouTube, TikTok, Facebook, X — the widget appears automatically.</p></div>
+<div class="step"><div class="n">2</div><h4>AI listens</h4><p>Audio is extracted and transcribed with state-of-the-art speech recognition.</p></div>
+<div class="step"><div class="n">3</div><h4>Claims checked</h4><p>Each factual claim is verified against live web sources in seconds.</p></div>
+<div class="step"><div class="n">4</div><h4>Verdicts stream in</h4><p>Supported, Disputed, or Unverifiable — with citations you can click.</p></div>
+</div>
+</div>
+
+<div class="dl" id="download">
+<h3>Stop getting fooled by viral videos</h3>
+<p>Free and open source. Built by Team Pirates for Tech Horizon 2.0.</p>
+<div class="btns" style="justify-content:center">
+<a class="btn p" href="https://github.com/ozrehan/factcheck-live/tree/main/extension">⚡ Install Extension</a>
+<a class="btn s" href="https://github.com/ozrehan/factcheck-live">Backend + Source</a>
+</div>
+</div>
+
+<footer><b>FactCheck Live</b> · Team Pirates · Tech Horizon 2.0 · Open source</footer>
+</body>
+</html>
